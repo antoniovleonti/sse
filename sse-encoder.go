@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+  "errors"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -92,18 +93,15 @@ func (r Event) Render(w http.ResponseWriter) error {
     http.Error(w, "SSE not supported", http.StatusInternalServerError)
     return errors.New("sse not supported")
   }
-
 	header := w.Header()
 	header["Content-Type"] = contentType
 
 	if _, exist := header["Cache-Control"]; !exist {
 		header["Cache-Control"] = noCache
 	}
-	err := Encode(w, r)
-  if err != nil {
+	if err := Encode(w, r); err != nil{
     return err
   }
-
   flusher.Flush()
   return nil
 }

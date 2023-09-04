@@ -29,9 +29,6 @@ func (d *decoder) dispatchEvent(event Event, data string) {
 	if dataLength == 0 && event.Event == "" {
 		return
 	}
-	if event.Event == "" {
-		event.Event = "message"
-	}
 	event.Data = data
 	d.events = append(d.events, event)
 }

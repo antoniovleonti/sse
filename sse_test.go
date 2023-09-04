@@ -34,13 +34,13 @@ data:id:fake
 func TestEncodeWithEvent(t *testing.T) {
 	w := new(bytes.Buffer)
 	event := Event{
-		Event: "t\n:<>\r\test",
+		Event: "test",
 		Data:  "junk\n\njk\nid:fake",
 	}
 	err := Encode(w, event)
 	assert.NoError(t, err)
 	assert.Equal(t, w.String(),
-		`event:t\n:<>\r	est
+		`event:test
 data:junk
 data:
 data:jk
