@@ -87,13 +87,25 @@ func writeData(w stringWriter, data interface{}) error {
 }
 
 func (r Event) Render(w http.ResponseWriter) error {
+  flusher, ok := w.(http.Flusher)
+  if !ok {
+    http.Error(w, "SSE not supported", http.StatusInternalServerError)
+    return errors.New("sse not supported")
+  }
+
 	header := w.Header()
 	header["Content-Type"] = contentType
 
 	if _, exist := header["Cache-Control"]; !exist {
 		header["Cache-Control"] = noCache
 	}
-	return Encode(w, r)
+	err := Encode(w, r)
+  if err != nil {
+    return err
+  }
+
+  flusher.Flush()
+  return nil
 }
 
 func kindOfData(data interface{}) reflect.Kind {
